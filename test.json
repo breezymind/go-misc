@@ -1,0 +1,10 @@
+{
+    "obj": {
+        "str-attr": "sgml",
+        "obj-attr": {
+            "para": "a meta-markup language, used to create markup languages such as docbook."
+        },
+        "arr-attr": ["gml", "xml"],
+        "int-attr": 100
+    }
+}

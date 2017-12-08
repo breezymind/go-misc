@@ -18,7 +18,8 @@ import (
 	"github.com/breezymind/syncmap"
 )
 
-func RequireJson(filepath string) (*syncmap.SyncMap, error) {
+// RequireJSON 는 filepath 정의한 파일을 로드 하여 syncmap.SyncMap 형태로 리턴한다
+func RequireJSON(filepath string) (*syncmap.SyncMap, error) {
 	file, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("Read File Error : %s", err)
@@ -32,6 +33,7 @@ func RequireJson(filepath string) (*syncmap.SyncMap, error) {
 	return wrap, nil
 }
 
+// GoroutineID 는 고루틴 고유값을 리턴 한다
 func GoroutineID() int {
 	var buf [64]byte
 	n := runtime.Stack(buf[:], false)
@@ -43,9 +45,7 @@ func GoroutineID() int {
 	return id
 }
 
-type SignalCallback func()
-
-func SignalListener(cb SignalCallback) chan os.Signal {
+func SignalListener(cb func()) chan os.Signal {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(
 		sig,
@@ -76,21 +76,26 @@ func SignalListener(cb SignalCallback) chan os.Signal {
 	return sig
 }
 
+// SetTimeout 는 ms 만큼 후에 cb 함수를 실행 한다
 func SetTimeout(cb func(), ms time.Duration) {
 	time.Sleep(time.Millisecond * ms)
 	cb()
 }
 
-func SetInterval(cb func(), ms time.Duration) {
+// SetInterval 는 ms 만큼 반복하며 cb 함수에 true 리턴하면 종료 한다
+func SetInterval(cb func() bool, ms time.Duration) {
 	t := time.NewTicker(time.Millisecond * ms).C
 	for {
 		select {
 		case <-t:
-			cb()
+			if cb() == true {
+				return
+			}
 		}
 	}
 }
 
+/*
 func LoadFiles(dir string, ext string) map[string]interface{} {
 	cts := make(map[string]interface{}, 0)
 	nodes, err := ioutil.ReadDir(dir)
@@ -112,12 +117,15 @@ func LoadFiles(dir string, ext string) map[string]interface{} {
 	}
 	return cts
 }
+*/
 
+// IsJSON 는 string 이 json 포멧인지 검증한다
 func IsJSON(str string) bool {
 	var js json.RawMessage
 	return json.Unmarshal([]byte(str), &js) == nil
 }
 
+// InArray 는 pool 배열에서 needle 값이 있는 지 확인한다
 func InArray(needle interface{}, pool interface{}) (bool, int) {
 	val := reflect.Indirect(reflect.ValueOf(pool))
 	switch val.Kind() {
