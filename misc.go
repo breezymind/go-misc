@@ -18,8 +18,8 @@ import (
 	"github.com/breezymind/syncmap"
 )
 
-// RequireJSON 는 filepath 정의한 파일을 로드 하여 syncmap.SyncMap 형태로 리턴한다
-func RequireJSON(filepath string) (*syncmap.SyncMap, error) {
+// RequireJSONFile 는 filepath로 정의한 주석을 제거한 json 파일을 로드 하여 syncmap.SyncMap 형태로 리턴한다.
+func RequireJSONFile(filepath string) (*syncmap.SyncMap, error) {
 	file, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("Read File Error : %s", err)

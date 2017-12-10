@@ -6,12 +6,12 @@ import (
 )
 
 // NOTE: Tests
-func Test_RequireJSON(t *testing.T) {
-	parse, err := RequireJSON("test.json")
+func Test_RequireJSONFile(t *testing.T) {
+	parse, err := RequireJSONFile("test.json")
 	if err != nil {
-		t.Errorf("Test_RequireJSON\n %s", err)
+		t.Errorf("Test_RequireJSONFile\n %s", err)
 	}
-	t.Logf("Test_RequireJSON\n %s", parse.GetJSONPretty())
+	t.Logf("Test_RequireJSONFile\n %s", parse.GetJSONPretty())
 }
 
 func Test_GoroutineID(t *testing.T) {
@@ -41,9 +41,9 @@ func Test_SetInterval(t *testing.T) {
 // 	LoadFiles("/Users/breezymind/.gvm/pkgsets/go1.9.2/global/src/github.com/breezymind/go-misc", "")
 // }
 func Test_IsJSON(t *testing.T) {
-	parse, err := RequireJSON("test.json")
+	parse, err := RequireJSONFile("test.json")
 	if err != nil {
-		t.Errorf("Test_RequireJSON\n %s", err)
+		t.Errorf("Test_RequireJSONFile\n %s", err)
 	}
 	rawjson := parse.GetJSONString()
 	t.Log(rawjson)
@@ -63,8 +63,8 @@ func Test_InArray(t *testing.T) {
 
 // NOTE: Examples
 
-func ExampleRequireJSON() {
-	parse, err := RequireJSON("test.json")
+func ExampleRequireJSONFile() {
+	parse, err := RequireJSONFile("test.json")
 	if err != nil {
 		fmt.Printf("Error : %s", err.Error())
 	}
@@ -117,7 +117,7 @@ func ExampleSetInterval() {
 }
 
 func ExampleIsJSON(t *testing.T) {
-	parse, err := RequireJSON("test.json")
+	parse, err := RequireJSONFile("test.json")
 	if err != nil {
 		fmt.Printf("Error : %s", err.Error())
 	}
