@@ -36,7 +36,6 @@ func Test_SetInterval(t *testing.T) {
 // func Test_LoadFiles(t *testing.T) {
 // 	LoadFiles("/Users/breezymind/.gvm/pkgsets/go1.9.2/global/src/github.com/breezymind/go-misc", "")
 // }
-
 func Test_IsJSON(t *testing.T) {
 	parse, err := RequireJSON("test.json")
 	if err != nil {
