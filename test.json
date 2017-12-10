@@ -1,5 +1,7 @@
 {
+    /* json format sample */
     "obj": {
+        // string attribute
         "str-attr": "sgml",
         "obj-attr": {
             "para": "a meta-markup language, used to create markup languages such as docbook."

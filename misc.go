@@ -26,7 +26,7 @@ func RequireJSON(filepath string) (*syncmap.SyncMap, error) {
 	}
 	re := regexp.MustCompile("(?s)[^https?:]//.*?\n|/\\*.*?\\*/")
 	validfile := re.ReplaceAll(file, nil)
-	wrap := syncmap.NewSyncMapByJsonByte(validfile)
+	wrap := syncmap.NewSyncMapByJSONByte(validfile)
 	if wrap == nil {
 		return nil, fmt.Errorf("Read File Error : %s", err)
 	}
