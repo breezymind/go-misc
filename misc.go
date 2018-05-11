@@ -3,6 +3,8 @@ package misc
 import (
 	"encoding/json"
 	"fmt"
+	"hash/crc32"
+	"hash/crc64"
 	"io/ioutil"
 	"log"
 	"os"
@@ -15,18 +17,18 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/breezymind/syncmap"
+	"github.com/breezymind/gq"
 )
 
-// RequireJSONFile 는 filepath로 정의한 주석을 제거한 json 파일을 로드 하여 syncmap.SyncMap 형태로 리턴한다.
-func RequireJSONFile(filepath string) (*syncmap.SyncMap, error) {
+// RequireJSONFile 는 filepath로 정의한 주석을 제거한 json 파일을 로드 하여 gq.SyncMap 형태로 리턴한다.
+func RequireJSONFile(filepath string) (*gq.SyncMap, error) {
 	file, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("Read File Error : %s", err)
 	}
 	re := regexp.MustCompile("(?s)[^https?:]//.*?\n|/\\*.*?\\*/")
 	validfile := re.ReplaceAll(file, nil)
-	wrap := syncmap.NewSyncMapByJSONByte(validfile)
+	wrap := gq.NewSyncMapByJSONByte(validfile)
 	if wrap == nil {
 		return nil, fmt.Errorf("Read File Error : %s", err)
 	}
@@ -137,4 +139,29 @@ func InArray(needle interface{}, pool interface{}) (bool, int) {
 		}
 	}
 	return false, -1
+}
+
+// StringSplitApply 는 문자열에서 특정 문자를 기준으로 슬라이스를 만들고 각 요소에 특정함수를 적용한다
+func StringSplitApply(s, sep, join string, cb func(part string) string) string {
+	tmp := make([]string, 0)
+	for _, part := range strings.Split(s, sep) {
+		part = cb(part)
+		if len(part) > 0 {
+			tmp = append(tmp, part)
+		}
+	}
+	return strings.Join(tmp, join)
+}
+
+func CRC32(raw string) string {
+	return fmt.Sprintf("%08x", crc32.ChecksumIEEE(
+		[]byte(raw),
+	))
+}
+
+func CRC64(raw string) string {
+	return fmt.Sprintf("%x", crc64.Checksum(
+		[]byte(raw),
+		crc64.MakeTable(crc64.ECMA),
+	))
 }

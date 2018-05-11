@@ -1,5 +1,5 @@
 # go-misc [![GoDoc](https://godoc.org/github.com/breezymind/go-misc?status.svg)](https://godoc.org/github.com/breezymind/go-misc)
-golang 프로젝트들을 도와줄 라이브러리
+ A library to help my golang project 
 
 ## Todos
 
@@ -53,9 +53,9 @@ fmt.Println(InArray("breezy", infs))
 // true 1
 ```
 
-**func RequireJSONFile(filepath string)(\*syncmap.SyncMap, error)**
+**func RequireJSONFile(filepath string)(\*gq.SyncMap, error)**
 
-: RequireJSONFile 는 filepath로 정의한 주석을 제거한 json 파일을 로드 하여 syncmap.SyncMap 형태로 리턴한다
+: RequireJSONFile 는 filepath로 정의한 주석을 제거한 json 파일을 로드 하여 gq.SyncMap 형태로 리턴한다
 
 ```go
 parse, err := RequireJSONFile("test.json")
@@ -131,8 +131,6 @@ SetTimeout(func() {
 // Output:
 // after 2 seconds
 ```
-
-
 
 
 ```bash

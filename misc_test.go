@@ -2,6 +2,7 @@ package misc
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -61,6 +62,13 @@ func Test_InArray(t *testing.T) {
 	t.Log(InArray("breezy", infs))
 }
 
+func Test_StringSplitApply(t *testing.T) {
+	strs := "박기호 기자\n     이후민 기자\n     박응진 기자\n     정상훈 기자"
+	t.Log(StringSplitApply(strs, "\n", "/", func(part string) string {
+		return strings.TrimSpace(strings.Replace(part, " 기자", "", -1))
+	}))
+}
+
 // NOTE: Examples
 
 func ExampleRequireJSONFile() {
@@ -116,7 +124,7 @@ func ExampleSetInterval() {
 	// end
 }
 
-func ExampleIsJSON(t *testing.T) {
+func ExampleIsJSON() {
 	parse, err := RequireJSONFile("test.json")
 	if err != nil {
 		fmt.Printf("Error : %s", err.Error())
@@ -143,4 +151,16 @@ func ExampleInArray() {
 	// true 0
 	// true 1
 	// true 1
+}
+
+func ExampleStringSplitApply() {
+	strs := "박기호 기자\n     이후민 기자\n     박응진 기자\n     정상훈 기자"
+	fmt.Println(
+		StringSplitApply(strs, "\n", "/", func(part string) string {
+			return strings.TrimSpace(strings.Replace(part, " 기자", "", -1))
+		}),
+	)
+
+	// Output:
+	// 박기호/이후민/박응진/정상훈
 }
