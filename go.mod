@@ -1,4 +1,4 @@
-module go-misc
+module github.com/breezymind/go-misc
 
 require (
 	github.com/breezymind/gq v0.0.0-20180601085530-64d3d2ebe983
