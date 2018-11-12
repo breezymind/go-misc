@@ -1,10 +1,9 @@
 package misc
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"hash/crc32"
-	"hash/crc64"
 	"io/ioutil"
 	"log"
 	"os"
@@ -18,6 +17,7 @@ import (
 	"time"
 
 	"github.com/breezymind/gq"
+	"github.com/pquerna/ffjson/ffjson"
 )
 
 // RequireJSONFile 는 filepath로 정의한 주석을 제거한 json 파일을 로드 하여 gq.SyncMap 형태로 리턴한다.
@@ -97,8 +97,7 @@ func SetInterval(cb func() bool, ms time.Duration) {
 	}
 }
 
-/*
-func LoadFiles(dir string, ext string) map[string]interface{} {
+func LoadFiles(dir, ext string) map[string]interface{} {
 	cts := make(map[string]interface{}, 0)
 	nodes, err := ioutil.ReadDir(dir)
 	if err != nil {
@@ -108,23 +107,33 @@ func LoadFiles(dir string, ext string) map[string]interface{} {
 	for _, node := range nodes {
 		nodename := node.Name()
 		nodepath := dir + "/" + nodename
+
 		if node.IsDir() {
 			for k, v := range LoadFiles(nodepath, ext) {
 				cts[k] = v
 			}
 		} else {
-			res, _ := ioutil.ReadFile(nodepath)
-			cts[strings.Replace(nodename, ext, "", -1)] = res
+			if func(s []string) string {
+				return s[len(s)-1]
+			}(strings.Split(nodename, ".")) == ext {
+				res, _ := ioutil.ReadFile(nodepath)
+				cts[strings.Replace(nodename, "."+ext, "", -1)] = res
+			}
 		}
 	}
 	return cts
 }
-*/
 
 // IsJSON 는 string 이 json 포멧인지 검증한다
 func IsJSON(str string) bool {
 	var js json.RawMessage
 	return json.Unmarshal([]byte(str), &js) == nil
+}
+
+func ToJSON(v interface{}) ([]byte, error) {
+	b := bytes.NewBuffer(nil)
+	err := ffjson.NewEncoder(b).Encode(v)
+	return b.Bytes(), err
 }
 
 // InArray 는 pool 배열에서 needle 값이 있는 지 확인한다
@@ -141,8 +150,24 @@ func InArray(needle interface{}, pool interface{}) (bool, int) {
 	return false, -1
 }
 
-// StringSplitApply 는 문자열에서 특정 문자를 기준으로 슬라이스를 만들고 각 요소에 특정함수를 적용한다
-func StringSplitApply(s, sep, join string, cb func(part string) string) string {
+// StrSliceApply 는 str slice 에 특정함수를 적용하여 재구성 한다
+func StrSliceApply(raw []string, cb func(text string) string) []string {
+	for k, v := range raw {
+		raw[k] = cb(v)
+	}
+	return raw
+}
+
+// func SliceApplyFunc(raw []interface{}, cb func(text interface{}) []interface{}) []interface{} {
+// 	for k, v := range raw {
+// 		raw[k] = strings.Join(cb(v), " ")
+// 	}
+// 	return raw
+// }
+
+// StrSplitApply 는 문자열에서 특정 문자를 기준으로 슬라이스를 만들고 각 요소에 특정함수를 적용한다
+/*
+func StrSplitApply(s, sep, join string, cb func(part string) string) string {
 	tmp := make([]string, 0)
 	for _, part := range strings.Split(s, sep) {
 		part = cb(part)
@@ -152,16 +177,4 @@ func StringSplitApply(s, sep, join string, cb func(part string) string) string {
 	}
 	return strings.Join(tmp, join)
 }
-
-func CRC32(raw string) string {
-	return fmt.Sprintf("%08x", crc32.ChecksumIEEE(
-		[]byte(raw),
-	))
-}
-
-func CRC64(raw string) string {
-	return fmt.Sprintf("%x", crc64.Checksum(
-		[]byte(raw),
-		crc64.MakeTable(crc64.ECMA),
-	))
-}
+*/

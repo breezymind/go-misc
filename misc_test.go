@@ -2,7 +2,7 @@ package misc
 
 import (
 	"fmt"
-	"strings"
+	"hash/crc64"
 	"testing"
 )
 
@@ -62,11 +62,40 @@ func Test_InArray(t *testing.T) {
 	t.Log(InArray("breezy", infs))
 }
 
-func Test_StringSplitApply(t *testing.T) {
-	strs := "박기호 기자\n     이후민 기자\n     박응진 기자\n     정상훈 기자"
-	t.Log(StringSplitApply(strs, "\n", "/", func(part string) string {
-		return strings.TrimSpace(strings.Replace(part, " 기자", "", -1))
-	}))
+// func Test_StrSplitApply(t *testing.T) {
+// 	strs := "박기호 기자\n     이후민 기자\n     박응진 기자\n     정상훈 기자"
+// 	t.Log(StrSplitApply(strs, "\n", "/", func(part string) string {
+// 		return strings.TrimSpace(strings.Replace(part, " 기자", "", -1))
+// 	}))
+// }
+
+// func Test_StrSliceApply(t *testing.T) {
+// 	rawdata := []string{
+// 		"박기호 기자", "이후민 기자", "박응진 기자", "정상훈 기자",
+// 	}
+// 	m := func(raw string) []string {
+// 		return strings.Split(raw, " ")
+// 	}
+// 	t.Log(
+// 		strings.Join(
+// 			StrSliceApply(rawdata, m),
+// 			" - ",
+// 		),
+// 	)
+// 	// Output:
+// 	// 박기호 기자 - 이후민 기자 - 박응진 기자 - 정상훈 기자
+// }
+
+func Test_CRC64(t *testing.T) {
+	// parse, err := RequireJSONFile("test.json")
+	// if err != nil {
+	// 	t.Errorf("Test_RequireJSONFile\n %s", err)
+	// }
+	t.Logf(CRC32("dasdasdasdasdasdasdasdad"))
+	t.Logf(fmt.Sprintf("%d", crc64.Checksum(
+		[]byte("da"),
+		crc64.MakeTable(crc64.ECMA),
+	)))
 }
 
 // NOTE: Examples
@@ -153,14 +182,31 @@ func ExampleInArray() {
 	// true 1
 }
 
-func ExampleStringSplitApply() {
-	strs := "박기호 기자\n     이후민 기자\n     박응진 기자\n     정상훈 기자"
-	fmt.Println(
-		StringSplitApply(strs, "\n", "/", func(part string) string {
-			return strings.TrimSpace(strings.Replace(part, " 기자", "", -1))
-		}),
-	)
+// func ExampleStrSplitApply() {
+// 	strs := "박기호 기자\n     이후민 기자\n     박응진 기자\n     정상훈 기자"
+// 	fmt.Println(
+// 		StrSplitApply(strs, "\n", "/", func(part string) string {
+// 			return strings.TrimSpace(strings.Replace(part, " 기자", "", -1))
+// 		}),
+// 	)
 
-	// Output:
-	// 박기호/이후민/박응진/정상훈
-}
+// 	// Output:
+// 	// 박기호/이후민/박응진/정상훈
+// }
+
+// func ExampleStrSliceApply() {
+// 	rawdata := []string{
+// 		"박기호 기자", "이후민 기자", "박응진 기자", "정상훈 기자",
+// 	}
+// 	m := func(raw string) []string {
+// 		return strings.Split(raw, " ")
+// 	}
+// 	fmt.Println(
+// 		strings.Join(
+// 			StrSliceApply(rawdata, m),
+// 			" - ",
+// 		),
+// 	)
+// 	// Output:
+// 	// 박기호 기자 - 이후민 기자 - 박응진 기자 - 정상훈 기자
+// }
